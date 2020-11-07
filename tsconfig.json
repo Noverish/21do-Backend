@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["es6", "dom", "es2017"],
+    "baseUrl": ".",                 // absolute path
+    "paths": {                      // absolute path
+      "@src/*" : ["./src/*"],
+      "@test/*" : ["./test/*"]
+    },
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,  // typeorm
+    "experimentalDecorators": true  // typeorm
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ]
+}
