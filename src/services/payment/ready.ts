@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { kakaoAdminKey } from '@src/credentials';
+import { KAKAO_ADMIN_KEY } from '@src/envs';
 import querystring from 'querystring';
 
 export function PaymentReadyService(params: PaymentReadyService.Params): Promise<PaymentReadyService.Result> {
@@ -28,7 +28,7 @@ export function PaymentReadyService(params: PaymentReadyService.Params): Promise
       url: 'https://kapi.kakao.com/v1/payment/ready',
       data: bodyString,
       headers: {
-        Authorization: `KakaoAK ${kakaoAdminKey}`,
+        Authorization: `KakaoAK ${KAKAO_ADMIN_KEY}`,
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
       }
     }
