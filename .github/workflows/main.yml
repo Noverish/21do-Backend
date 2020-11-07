@@ -1,0 +1,37 @@
+name: Main
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  deploy:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-node@v1
+    - uses: actions/cache@v1
+      with:
+        path: node_modules
+        key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+    - run: npm install
+    - run: docker build -t hyunsub/merrymarry .
+    - run: docker save -o hyunsub-merrymarry.tar hyunsub/merrymarry
+    - uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        source: "hyunsub-merrymarry.tar"
+        target: "/home/hyunsub/docker/"
+    - uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.PORT }}
+        script: cd ~/docker; docker load -i hyunsub-merrymarry.tar; docker-compose up -d --force-recreate merrymarry; rm hyunsub-merrymarry.tar
