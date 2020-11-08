@@ -9,7 +9,7 @@ router.post('/ready', (req: Request, res: Response, next: NextFunction) => {
 
   if (!amount) {
     res.status(400);
-    res.json({ msg: 'amount is not exist '});
+    res.json({ msg: 'amount is not exist' });
     return;
   }
 
@@ -29,7 +29,7 @@ router.post('/approve', (req: Request, res: Response, next: NextFunction) => {
 
   if (!pg_token || !tid) {
     res.status(400);
-    res.json({ msg: 'params is insufficient'});
+    res.json({ msg: 'params is insufficient' });
     return;
   }
 
