@@ -2,9 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import http from 'http';
 import morgan from 'morgan';
+import "reflect-metadata";
 
 import { PORT } from '@src/envs';
 import routes from '@src/routes';
+import { createConnection } from 'typeorm';
 
 const app = express();
 
@@ -27,6 +29,12 @@ app.use((err, req, res, next) => {
 
 const server: http.Server = http.createServer(app);
 
-server.listen(PORT, () => {
-  console.log(`* API Server Started at ${PORT}`);
-});
+createConnection()
+  .then(() => {
+    server.listen(PORT, () => {
+      console.log(`* API Server Started at ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error(err);
+  })
