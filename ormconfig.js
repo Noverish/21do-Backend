@@ -6,7 +6,7 @@ module.exports = {
   "password": process.env.DB_PASS,
   "database": process.env.DB_DATABASE,
   "synchronize": true,
-  "logging": true,
+  "logging": ["query", "error"],
   "entities": [
      "src/entity/**/*.ts"
   ]
