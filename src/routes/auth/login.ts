@@ -4,7 +4,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 
 const router: Router = Router();
 
-router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+async function handle(req, res) {
   const body = req.body as {
     username: string;
     password: string;
@@ -27,6 +27,15 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
 
   res.status(200);
   res.json({ userId: user.userId });
+}
+
+router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+  handle(req, res)
+    .catch((err) => {
+      console.error(err);
+      res.status(500);
+      res.json({ msg: err.toString() });
+    })
 });
 
 export default router;
