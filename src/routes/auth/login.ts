@@ -22,6 +22,13 @@ async function handle(req, res) {
   console.log('password', password);
   console.log('user.password', user.password);
 
+  try {
+    const result = await bcrypt.compare(password, user.password);
+    console.log('result', result);
+  } catch (err) {
+    console.log(err);
+  }
+
   if (!(await bcrypt.compare(password, user.password))) {
     res.status(400);
     res.json({ msg: '비밀번호가 틀렸습니다' });
