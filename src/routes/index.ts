@@ -6,6 +6,7 @@ import marriage from './marriage';
 import person from './person';
 import auth from './auth';
 import guestbook from './guestbook';
+import ticket from './ticket';
 
 const router: Router = Router();
 
@@ -15,5 +16,6 @@ router.use('/dummy', dummy);
 router.use('/marriage', marriage);
 router.use('/person', person);
 router.use('/guestbook', guestbook);
+router.use('/ticket', ticket);
 
 export default router;
