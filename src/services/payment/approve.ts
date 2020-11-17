@@ -1,44 +1,47 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { KAKAO_ADMIN_KEY } from '@src/envs';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { IsString, validateOrReject } from 'class-validator';
 import querystring from 'querystring';
 
-export function PaymentApproveService(params: PaymentApproveService.Params): Promise<PaymentApproveService.Result> {
-  return new Promise((resolve, reject) => {
-    const { pg_token, tid } = params;
+export async function paymentApprove(params: paymentApprove.Params): Promise<paymentApprove.Result> {
+  await validateOrReject(new paymentApprove.Params(params));
 
-    const body = {
-      cid: 'TC0ONETIME',
-      tid,
-      partner_order_id: 'partner_order_id',
-      partner_user_id: 'partner_user_id',
-      pg_token,
+  const { pgToken, tid } = params;
+
+  const body = {
+    cid: 'TC0ONETIME',
+    tid,
+    partner_order_id: 'partner_order_id',
+    partner_user_id: 'partner_user_id',
+    pg_token: pgToken,
+  }
+
+  const bodyString = querystring.stringify(body);
+
+  const config: AxiosRequestConfig = {
+    method: 'post',
+    url: 'https://kapi.kakao.com/v1/payment/approve',
+    data: bodyString,
+    headers: {
+      Authorization: `KakaoAK ${KAKAO_ADMIN_KEY}`,
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
     }
+  }
 
-    const bodyString = querystring.stringify(body);
-
-    const config: AxiosRequestConfig = {
-      method: 'post',
-      url: 'https://kapi.kakao.com/v1/payment/approve',
-      data: bodyString,
-      headers: {
-        Authorization: `KakaoAK ${KAKAO_ADMIN_KEY}`,
-        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-      }
-    }
-
-    axios(config)
-      .then((result: AxiosResponse) => {
-        resolve(result.data);
-      })
-      .catch((error) => {
-        reject(error);
-      })
-  });
+  const result: AxiosResponse = await axios(config);
+  return result.data;
 }
 
-export namespace PaymentApproveService {
-  export interface Params {
-    pg_token: string;
+export namespace paymentApprove {
+  export class Params {
+    constructor(obj: object) {
+      Object.assign(this, obj);
+    }
+
+    @IsString()
+    pgToken: string;
+
+    @IsString()
     tid: string;
   }
 

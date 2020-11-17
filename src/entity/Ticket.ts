@@ -1,4 +1,6 @@
+import { TicketDTO } from "@src/models";
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Marriage } from ".";
 
 @Entity()
 export default class Ticket extends BaseEntity {
@@ -13,4 +15,11 @@ export default class Ticket extends BaseEntity {
 
   @Column({ type: 'bool', default: false })
   isUsed: boolean;
+
+  async toDTO(): Promise<TicketDTO> {
+    return {
+      marriage: await (await Marriage.findOne(this.marriageId)).toDTO(),
+      ...this,
+    }
+  }
 }

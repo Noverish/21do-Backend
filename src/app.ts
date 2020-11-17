@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500);
-  res.json({ msg: err.stack });
+  res.json({ msg: err.toString() });
 });
 
 const server: http.Server = http.createServer(app);
