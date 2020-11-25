@@ -1,5 +1,6 @@
 export { paymentReady } from './payment/ready';
 export { paymentApprove } from './payment/approve';
+export { paymentToss } from './payment/toss';
 
 export { authLogin } from './auth/login';
 export { authAdd } from './auth/add';
