@@ -7,6 +7,9 @@ export default class Transaction extends BaseEntity {
   transactionId: number;
   
   @Column()
+  userId: number;
+  
+  @Column()
   amount: number;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
@@ -14,8 +17,9 @@ export default class Transaction extends BaseEntity {
 
   async toDTO(): Promise<TransactionDTO> {
     return {
+      transactionId: this.transactionId,
+      amount: this.amount,
       date: this.date.toISOString(),
-      ...this,
     }
   }
 }

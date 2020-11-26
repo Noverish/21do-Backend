@@ -1,12 +1,12 @@
 import { KAKAO_ADMIN_KEY } from '@src/envs';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { IsString, validateOrReject } from 'class-validator';
+import axios, { AxiosRequestConfig } from 'axios';
+import Joi from 'joi';
 import querystring from 'querystring';
 
-export async function paymentApprove(params: paymentApprove.Params): Promise<paymentApprove.Result> {
-  await validateOrReject(new paymentApprove.Params(params));
+export async function paymentKakaoApprove(params: paymentKakaoApprove.Params): Promise<paymentKakaoApprove.Result> {
+  const value: paymentKakaoApprove.Params = await paymentKakaoApprove.schema.validateAsync(params);
 
-  const { pgToken, tid } = params;
+  const { pgToken, tid } = value;
 
   const body = {
     cid: 'TC0ONETIME',
@@ -28,22 +28,19 @@ export async function paymentApprove(params: paymentApprove.Params): Promise<pay
     }
   }
 
-  const result: AxiosResponse = await axios(config);
-  return result.data;
+  return (await axios(config)).data;
 }
 
-export namespace paymentApprove {
-  export class Params {
-    constructor(obj: object) {
-      Object.assign(this, obj);
-    }
-
-    @IsString()
+export namespace paymentKakaoApprove {
+  export interface Params {
     pgToken: string;
-
-    @IsString()
     tid: string;
   }
+
+  export const schema = Joi.object({
+    pgToken: Joi.string().required(),
+    tid: Joi.string().required(),
+  })
 
   interface Amount {
     total: number; // 전체 결제 금액

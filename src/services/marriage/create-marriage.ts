@@ -1,45 +1,35 @@
 import { Marriage } from '@src/entity';
-import { IsUserExist } from '@src/entity/User';
 import { MarriageDTO } from '@src/models';
-import { IsString, validateOrReject, IsInt, IsOptional } from 'class-validator';
+import Joi from 'joi';
 
 export async function createMarriage(params: createMarriage.Params): Promise<createMarriage.Result> {
-  await validateOrReject(new createMarriage.Params(params));
+  const value: createMarriage.Params = await createMarriage.schema.validateAsync(params);
 
-  const { maleUserId, ladyUserId, location, account, bank } = params;
-
-  const insertResult = await Marriage.insert({ maleUserId, ladyUserId, location, account, bank });
-  const marriageId = insertResult.identifiers[0].marriageId;
-  const marriage = await Marriage.findOne(marriageId);
+  const insertResult = await Marriage.insert(value);
+  const marriage = await Marriage.findOne(insertResult.identifiers[0].marriageId);
   return await marriage.toDTO();
 }
 
 export namespace createMarriage {
-  export class Params {
-    constructor(obj: object) {
-      Object.assign(this, obj);
-    }
-
-    @IsInt()
-    @IsUserExist()
-    maleUserId: number;
-
-    @IsInt()
-    @IsUserExist()
-    ladyUserId: number;
-
-    @IsString()
-    @IsOptional()
+  export interface Params {
+    maleName?: string;
+    malePhone?: string;
+    ladyName?: string;
+    ladyPhone?: string;
     location?: string;
-
-    @IsString()
-    @IsOptional()
     account?: string;
-
-    @IsString()
-    @IsOptional()
     bank?: string;
   }
-
+  
+  export const schema = Joi.object({
+    maleName: Joi.string().optional(),
+    malePhone: Joi.string().length(11).optional(),
+    ladyName: Joi.string().optional(),
+    ladyPhone: Joi.string().length(11).optional(),
+    location: Joi.string().optional(),
+    account: Joi.string().optional(),
+    bank: Joi.string().optional(),
+  })
+  
   export type Result = MarriageDTO;
 }

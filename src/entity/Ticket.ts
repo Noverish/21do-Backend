@@ -6,20 +6,21 @@ import { Marriage } from ".";
 export default class Ticket extends BaseEntity {
   @PrimaryGeneratedColumn()
   ticketId: number;
-  
-  @Column()
-  userId: number;
 
   @Column()
   marriageId: number;
+  
+  @Column()
+  userId: number;
 
   @Column({ type: 'bool', default: false })
   isUsed: boolean;
 
   async toDTO(): Promise<TicketDTO> {
     return {
+      ticketId: this.ticketId,
       marriage: await (await Marriage.findOne(this.marriageId)).toDTO(),
-      ...this,
+      isUsed: this.isUsed,
     }
   }
 }

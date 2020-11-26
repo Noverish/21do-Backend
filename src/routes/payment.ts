@@ -1,16 +1,16 @@
-import { paymentApprove, paymentReady, paymentToss } from '@src/services';
+import { paymentApprove, paymentKakaoReady, paymentToss } from '@src/services';
 import { NextFunction, Request, Response, Router } from 'express';
 import { handleServiceResult } from './utils';
 
 const router: Router = Router();
 
-router.post('/ready', async (req: Request, res: Response, next: NextFunction) => {
-  paymentReady({ ...req.body, origin: req.header('origin') } as any)
+router.post('/kakao/ready', async (req: Request, res: Response, next: NextFunction) => {
+  paymentKakaoReady(req.body as any)
     .then(handleServiceResult(200, res))
     .catch(next);
 });
 
-router.post('/approve', (req: Request, res: Response, next: NextFunction) => {
+router.post('/kakao/approve', (req: Request, res: Response, next: NextFunction) => {
   paymentApprove(req.body as any)
     .then(handleServiceResult(200, res))
     .catch(next);

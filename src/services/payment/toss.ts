@@ -1,15 +1,13 @@
-import { Transaction } from '@src/entity';
 import { TOSS_SECRET_KEY } from '@src/envs';
-import { TransactionDTO } from '@src/models';
 import axios, { AxiosRequestConfig } from 'axios';
-import { IsInt, IsString, validateOrReject } from 'class-validator';
+import Joi from 'joi';
 
 const secretKeyBase64 = Buffer.from(TOSS_SECRET_KEY + ':').toString('base64');
 
 export async function paymentToss(params: paymentToss.Params): Promise<paymentToss.Result> {
-  await validateOrReject(new paymentToss.Params(params));
+  const value: paymentToss.Params = await paymentToss.schema.validateAsync(params);
 
-  const { paymentKey, orderId, amount } = params;
+  const { paymentKey, orderId, amount } = value;
 
   const config: AxiosRequestConfig = {
     method: 'post',
@@ -21,62 +19,52 @@ export async function paymentToss(params: paymentToss.Params): Promise<paymentTo
     }
   }
 
-  const tossResult: TossResult = (await axios(config)).data;
-
-  const insertResult = await Transaction.insert({ amount });
-  const id = insertResult.identifiers[0].transactionId;
-  const transaction = await Transaction.findOne(id);
-  return await transaction.toDTO();
+  return (await axios(config)).data;
 }
 
 export namespace paymentToss {
-  export class Params {
-    constructor(obj: object) {
-      Object.assign(this, obj);
-    }
-
-    @IsString()
+  export interface Params {
     paymentKey: string;
-
-    @IsInt()
-    orderId: number;
-
-    @IsInt()
+    orderId: string;
     amount: number;
   }
 
-  export type Result = TransactionDTO;
-}
+  export const schema = Joi.object({
+    paymentKey: Joi.string().required(),
+    orderId: Joi.string().required(),
+    amount: Joi.number().required(),
+  })
 
-type TossResultCard = {
-  company: string,
-  number: string,
-  installmentPlanMonths: number,
-  approveNo: string,
-  useCardPoint: boolean,
-  cardType: string,
-  ownerType: string,
-  receiptUrl: string
-}
-
-type TossResult = {
-  paymentKey: string,
-  orderId: string,
-  mId: string,
-  currency: string,
-  method: '카드' | '가상계좌' | '휴대폰',
-  totalAmount: number,
-  balanceAmount: number,
-  status: 'READY' | 'IN_PROGRESS' | 'WAITING_FOR_DEPOSIT' | 'DONE' | 'CANCELED' | 'ABORTED' | 'PARTIAL_CANCELED',
-  requestedAt: string,
-  approvedAt: string,
-  useDiscount: boolean,
-  discountAmount: number | null,
-  useEscrow: boolean,
-  useCashReceipt: boolean,
-  card: TossResultCard,
-  virtualAccount: null,
-  cashReceipt: null,
-  cancels: any[] | null,
-  secret: string | null
+  type TossResultCard = {
+    company: string,
+    number: string,
+    installmentPlanMonths: number,
+    approveNo: string,
+    useCardPoint: boolean,
+    cardType: string,
+    ownerType: string,
+    receiptUrl: string
+  }
+  
+  export type Result = {
+    paymentKey: string,
+    orderId: string,
+    mId: string,
+    currency: string,
+    method: '카드' | '가상계좌' | '휴대폰',
+    totalAmount: number,
+    balanceAmount: number,
+    status: 'READY' | 'IN_PROGRESS' | 'WAITING_FOR_DEPOSIT' | 'DONE' | 'CANCELED' | 'ABORTED' | 'PARTIAL_CANCELED',
+    requestedAt: string,
+    approvedAt: string,
+    useDiscount: boolean,
+    discountAmount: number | null,
+    useEscrow: boolean,
+    useCashReceipt: boolean,
+    card: TossResultCard,
+    virtualAccount: null,
+    cashReceipt: null,
+    cancels: any[] | null,
+    secret: string | null
+  }
 }

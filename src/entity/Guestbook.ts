@@ -8,28 +8,31 @@ export default class Guestbook extends BaseEntity {
   guestbookId: number;
 
   @Column()
-  userId: number;
+  marriageId: number;
 
   @Column()
-  marriageId: number;
+  userId: number;
 
   @Column({ nullable: true })
   transactionId?: number;
 
-  @Column({ nullable: true })
-  belong?: string;
+  @Column()
+  belong: string;
 
-  @Column({ nullable: true })
-  msg?: string;
+  @Column()
+  msg: string;
 
   @Column({ type: 'bool', default: false })
   isOnline: boolean;
 
   async toDTOForUser(): Promise<GuestbookDTOForUser> {
     return {
+      guestbookId: this.guestbookId,
       marriage: await (await Marriage.findOne(this.marriageId)).toDTO(),
       transaction: (this.transactionId) ? await (await Transaction.findOne(this.transactionId)).toDTO() : undefined,
-      ...this,
+      belong: this.belong,
+      msg: this.msg,
+      isOnline: this.isOnline,
     }
   }
 }

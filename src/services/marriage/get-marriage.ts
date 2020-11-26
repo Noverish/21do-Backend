@@ -1,11 +1,12 @@
 import { Marriage } from '@src/entity';
 import { MarriageDTO } from '@src/models';
-import { IsInt, validateOrReject } from 'class-validator';
+import Joi from 'joi';
+
 
 export async function getMarriage(params: getMarriage.Params): Promise<getMarriage.Result> {
-  await validateOrReject(new getMarriage.Params(params));
+  const value: getMarriage.Params = await getMarriage.schema.validateAsync(params);
 
-  const { marriageId } = params;
+  const { marriageId } = value;
 
   const marriage = await Marriage.findOne(marriageId);
   if (marriage) {
@@ -16,14 +17,13 @@ export async function getMarriage(params: getMarriage.Params): Promise<getMarria
 }
 
 export namespace getMarriage {
-  export class Params {
-    constructor(obj: object){
-      Object.assign(this, obj);
-    }
-
-    @IsInt()
+  export interface Params {
     marriageId: number;
   }
+
+  export const schema = Joi.object({
+    marriageId: Joi.number().required(),
+  })
 
   export type Result = MarriageDTO;
 }

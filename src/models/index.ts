@@ -9,11 +9,13 @@ export interface UserDTO {
 
 export interface MarriageDTO {
   marriageId: number;
-  male: UserDTO;
-  lady: UserDTO;
-  location: string;
-  account: string;
-  bank: string;
+  maleName?: string;
+  malePhone?: string;
+  ladyName?: string;
+  ladyPhone?: string;
+  location?: string;
+  account?: string;
+  bank?: string;
 }
 
 export interface TransactionDTO {

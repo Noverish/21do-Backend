@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
-import { authLogin, authRegister, authAdd } from '@src/services';
+import { authAdd, authLogin, authRegister } from '@src/services';
 import { handleServiceResult } from './utils';
 
 const router: Router = Router();

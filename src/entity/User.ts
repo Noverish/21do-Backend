@@ -33,38 +33,7 @@ export default class User extends BaseEntity {
       name: this.name || undefined,
       phone: this.phone || undefined,
       addDate: this.addDate.toISOString(),
-      regDate: this.regDate?.toISOString(),
+      regDate: (this.regDate) ? this.regDate.toISOString() : undefined,
     }
   }
-}
-
-import {
-  registerDecorator,
-  ValidationOptions,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
-  ValidationArguments,
-} from 'class-validator';
-
-@ValidatorConstraint({ async: true })
-export class IsUserAlreadyExistConstraint implements ValidatorConstraintInterface {
-  async validate(userId: any, args: ValidationArguments) {
-    return User.findOne(userId).then(user => !!user);
-  }
-
-  defaultMessage(args: ValidationArguments) {
-    return 'No such user';
-  }
-}
-
-export function IsUserExist(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
-      constraints: [],
-      validator: IsUserAlreadyExistConstraint,
-    });
-  };
 }

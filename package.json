@@ -26,9 +26,9 @@
   "dependencies": {
     "axios": "^0.21.0",
     "bcrypt": "^5.0.0",
-    "class-validator": "^0.12.2",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "joi": "^17.3.0",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "querystring": "^0.2.0",

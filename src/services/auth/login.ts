@@ -1,12 +1,12 @@
 import { User } from '@src/entity';
-import { IsString, validateOrReject } from 'class-validator';
-import bcrypt from 'bcrypt';
 import { UserDTO } from '@src/models';
+import bcrypt from 'bcrypt';
+import Joi from 'joi';
 
 export async function authLogin(params: authLogin.Params): Promise<authLogin.Result> {
-  await validateOrReject(new authLogin.Params(params));
+  const value: authLogin.Params = await authLogin.schema.validateAsync(params);
 
-  const { username, password } = params;
+  const { username, password } = value;
 
   const user = await User.findOne({ username });
   if (!user) {
@@ -21,17 +21,15 @@ export async function authLogin(params: authLogin.Params): Promise<authLogin.Res
 }
 
 export namespace authLogin {
-  export class Params {
-    constructor(obj: object){
-      Object.assign(this, obj);
-    }
-
-    @IsString()
+  export interface Params {
     username: string;
-
-    @IsString()
     password: string;
   }
+
+  export const schema = Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  })
 
   export type Result = UserDTO;
 }

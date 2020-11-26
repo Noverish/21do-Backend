@@ -1,12 +1,12 @@
 import { KAKAO_ADMIN_KEY } from '@src/envs';
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { IsInt, IsString, validateOrReject } from 'class-validator';
+import axios, { AxiosRequestConfig } from 'axios';
+import Joi from 'joi';
 import querystring from 'querystring';
 
-export async function paymentReady(params: paymentReady.Params): Promise<paymentReady.Result> {
-  await validateOrReject(new paymentReady.Params(params));
+export async function paymentKakaoReady(params: paymentKakaoReady.Params): Promise<paymentKakaoReady.Result> {
+  const value: paymentKakaoReady.Params = await paymentKakaoReady.schema.validateAsync(params);
 
-  const { origin, amount, itemName } = params;
+  const { approval_url, fail_url, cancel_url, amount, itemName } = value;
 
   const body = {
     cid: 'TC0ONETIME',
@@ -17,9 +17,9 @@ export async function paymentReady(params: paymentReady.Params): Promise<payment
     total_amount: amount,
     vat_amount: 0,
     tax_free_amount: 0,
-    approval_url: `${origin}/payment-result.html?status=success`,
-    fail_url: `${origin}/payment-result.html?status=failure`,
-    cancel_url: `${origin}/payment-result.html?status=cancel`,
+    approval_url,
+    fail_url,
+    cancel_url,
   }
 
   const bodyString = querystring.stringify(body);
@@ -34,25 +34,25 @@ export async function paymentReady(params: paymentReady.Params): Promise<payment
     }
   }
 
-  const result: AxiosResponse = await axios(config);
-  return result.data;
+  return (await axios(config)).data;
 }
 
-export namespace paymentReady {
-  export class Params {
-    constructor(obj: object) {
-      Object.assign(this, obj);
-    }
-
-    @IsString()
+export namespace paymentKakaoReady {
+  export interface Params {
     itemName: string;
-
-    @IsString()
-    origin: string;
-
-    @IsInt()
+    approval_url: string;
+    fail_url: string;
+    cancel_url: string;
     amount: number;
   }
+
+  export const schema = Joi.object({
+    itemName: Joi.string().required(),
+    fail_url: Joi.string().required(),
+    approval_url: Joi.string().required(),
+    cancel_url: Joi.string().required(),
+    amount: Joi.number().required(),
+  })
 
   export interface Result {
     tid: string;

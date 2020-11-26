@@ -1,18 +1,12 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
-import { createMarriage, findMarriage, getMarriage, getMarriageByPhone } from '@src/services';
+import { createMarriage, getMarriage, findMarriageOrCreate } from '@src/services';
 import { handleServiceResult } from './utils';
 
 const router: Router = Router();
 
-router.post('/get/by/phone', async (req: Request, res: Response, next: NextFunction) => {
-  getMarriageByPhone(req.body as any)
-    .then(handleServiceResult(200, res))
-    .catch(next);
-});
-
-router.post('/find', async (req: Request, res: Response, next: NextFunction) => {
-  findMarriage(req.body as any)
+router.post('/find-or-create', async (req: Request, res: Response, next: NextFunction) => {
+  findMarriageOrCreate(req.body as any)
     .then(handleServiceResult(200, res))
     .catch(next);
 });
@@ -24,7 +18,7 @@ router.post('/', (req: Request, res: Response, next: NextFunction) => {
 });
 
 router.get('/:marriageId', async (req: Request, res: Response, next: NextFunction) => {
-  getMarriage({ marriageId: parseInt(req.params.marriageId) })
+  getMarriage(req.params as any)
     .then(handleServiceResult(200, res))
     .catch(next);
 });
