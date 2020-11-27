@@ -11,5 +11,6 @@ export { createMarriage } from './marriage/create-marriage';
 export { findMarriageOrCreate } from './marriage/find-marriage-or-create';
 
 export { workflowGuestbook } from './guestbook/workflow';
+export { listGuestbook } from './guestbook/list-guestbook';
 
 export { listTicket } from './ticket/list-ticket';

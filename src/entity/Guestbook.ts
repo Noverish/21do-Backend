@@ -25,6 +25,9 @@ export default class Guestbook extends BaseEntity {
   @Column({ type: 'bool', default: false })
   isOnline: boolean;
 
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  date: Date;
+
   async toDTOForUser(): Promise<GuestbookDTOForUser> {
     return {
       guestbookId: this.guestbookId,
@@ -33,6 +36,7 @@ export default class Guestbook extends BaseEntity {
       belong: this.belong,
       msg: this.msg,
       isOnline: this.isOnline,
+      date: this.date.toISOString(),
     }
   }
 }

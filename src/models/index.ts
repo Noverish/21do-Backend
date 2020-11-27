@@ -37,4 +37,5 @@ export interface GuestbookDTOForUser {
   belong?: string;
   msg?: string;
   isOnline: boolean;
+  date: string;
 }
