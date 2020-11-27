@@ -1,5 +1,5 @@
 {
-  "name": "merrymarry-backend",
+  "name": "21do-backend",
   "private": true,
   "scripts": {
     "dev": "nodemon --exec 'ts-node -r tsconfig-paths/register' --watch 'src/**/*.ts' src/app.ts",

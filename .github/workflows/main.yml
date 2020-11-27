@@ -18,15 +18,15 @@ jobs:
         path: node_modules
         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
     - run: npm install
-    - run: docker build -t hyunsub/merrymarry .
-    - run: docker save -o hyunsub-merrymarry.tar hyunsub/merrymarry
+    - run: docker build -t hyunsub/21do .
+    - run: docker save -o hyunsub-21do.tar hyunsub/21do
     - uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        source: "hyunsub-merrymarry.tar"
+        source: "hyunsub-21do.tar"
         target: "/home/hyunsub/docker/"
     - uses: appleboy/ssh-action@master
       with:
@@ -34,4 +34,4 @@ jobs:
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.PORT }}
-        script: cd ~/docker; docker load -i hyunsub-merrymarry.tar; docker-compose up -d --force-recreate merrymarry; rm hyunsub-merrymarry.tar
+        script: cd ~/docker; docker load -i hyunsub-21do.tar; docker-compose up -d --force-recreate 21do; rm hyunsub-21do.tar
