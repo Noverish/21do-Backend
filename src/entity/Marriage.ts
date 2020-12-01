@@ -27,6 +27,9 @@ export default class Marriage extends BaseEntity {
   @Column({ nullable: true })
   bank?: string;
 
+  @Column({ nullable: true })
+  date?: Date;
+
   async toDTO(): Promise<MarriageDTO> {
     return {
       marriageId: this.marriageId,
@@ -37,6 +40,7 @@ export default class Marriage extends BaseEntity {
       location: this.location || undefined,
       account: this.account || undefined,
       bank: this.bank || undefined,
+      date: this.date ? this.date.toISOString() : undefined,
     }
   }
 }

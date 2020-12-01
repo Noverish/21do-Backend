@@ -16,6 +16,7 @@ export interface MarriageDTO {
   location?: string;
   account?: string;
   bank?: string;
+  date?: string;
 }
 
 export interface TransactionDTO {

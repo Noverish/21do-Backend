@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 
-import { createMarriage, getMarriage, findMarriageOrCreate } from '@src/services';
+import { createMarriage, getMarriage, findMarriageOrCreate, listMarriage } from '@src/services';
 import { handleServiceResult } from './utils';
 
 const router: Router = Router();
@@ -19,6 +19,12 @@ router.post('/', (req: Request, res: Response, next: NextFunction) => {
 
 router.get('/:marriageId', async (req: Request, res: Response, next: NextFunction) => {
   getMarriage(req.params as any)
+    .then(handleServiceResult(200, res))
+    .catch(next);
+});
+
+router.get('/', (req: Request, res: Response, next: NextFunction) => {
+  listMarriage(req.query as any)
     .then(handleServiceResult(200, res))
     .catch(next);
 });

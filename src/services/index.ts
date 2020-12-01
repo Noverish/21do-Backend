@@ -7,6 +7,7 @@ export { paymentKakaoApprove as paymentApprove } from './payment/kakao-approve';
 export { paymentToss } from './payment/toss';
 
 export { getMarriage } from './marriage/get-marriage';
+export { listMarriage } from './marriage/list-marriage';
 export { createMarriage } from './marriage/create-marriage';
 export { findMarriageOrCreate } from './marriage/find-marriage-or-create';
 
